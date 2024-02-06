@@ -47,7 +47,7 @@ const actions = [
     label: "Suscribir usuario",
     action: () => {
       rl.question(
-        "---------------\nIngrese el nombre del tema y del usuario separado por coma: \n",
+        "---------------\nIngrese el nombre del usuario y del tema separado por coma: \n",
         (input) => {
           const splitString = input.split(",").map((el) => el.trim());
           const response = suscribeTopic(splitString[0], splitString[1]);
@@ -71,7 +71,7 @@ const actions = [
     },
   },
   {
-    label: "Enviar tema a usuario específico",
+    label: "Enviar alerta a usuario específico",
     action: () => {
       rl.question(
         "---------------\nIngrese el nombre del usuario y del tema separado por coma: \n",
@@ -137,7 +137,7 @@ const rl = readline.createInterface({
 });
 rl.prompt();
 rl.on("line", (line) => {
-  const optionSelected = actions[line];
+  const optionSelected = actions[line - 1];
   if (optionSelected) {
     optionSelected.action();
   } else {

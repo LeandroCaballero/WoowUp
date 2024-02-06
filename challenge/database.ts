@@ -14,7 +14,6 @@ export class Database {
       Database.instance = new Database();
     }
 
-    console.log("Database ready!");
     return Database.instance;
   }
 

@@ -3,6 +3,7 @@ import AlertFactory, { AlertType } from "../modules/Alerts.js";
 const database = Database.getInstance();
 export const sendAlertOneUser = (userName, topicName) => {
   const user = database.getOneUser(userName);
+
   const topic = database.getOneTopic(topicName);
   if (!user) {
     return "Usuario no encontrado!";
@@ -19,9 +20,13 @@ export const sendAlertOneUser = (userName, topicName) => {
   newAlert.sendAlert();
   //Agrego alerta al user
   user.addAlert(newAlert);
+  console.log("Usuario", user, database.getUsers);
+
   // Actualizo db
   database.updateUser(user);
   database.saveAlert(newAlert);
+
+  return "---";
 };
 export const spreadAlert = (topicName) => {
   const topic = database.getOneTopic(topicName);

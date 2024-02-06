@@ -2,7 +2,6 @@
   "name": "challenge",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "start": "tsc && node ./dist/app.js",
@@ -10,6 +9,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.16",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   },

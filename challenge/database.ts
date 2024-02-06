@@ -36,6 +36,10 @@ export class Database {
     return this.users;
   }
 
+  get getAlerts() {
+    return this.alerts;
+  }
+
   public getOneUser(name: string) {
     const userFinded = this.users.find((user) => user.getName == name);
     return userFinded;
@@ -53,5 +57,10 @@ export class Database {
     );
 
     this.users[indexUserFinded] = user;
+  }
+
+  public updateAlert(indexAlert: number, alert: Alert) {
+    // Con un id, no haria falta nada relacionado al índice
+    this.alerts[indexAlert] = alert;
   }
 }

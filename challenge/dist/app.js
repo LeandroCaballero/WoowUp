@@ -1,89 +1,158 @@
 import readline from "node:readline";
-import { getUsers, registerUser, suscribeTopic, } from "./src/controller/user.controller";
-import { createTopic } from "./src/controller/topic.controller";
+import {
+  getUsers,
+  registerUser,
+  suscribeTopic,
+} from "./src/controller/user.controller.js";
+import { createTopic } from "./src/controller/topic.controller.js";
+import {
+  spreadAlert,
+  sendAlertOneUser,
+  markAlertAsRead,
+  getUnreadNotExpiredAlertsForUser,
+  getAlertsForTopic,
+} from "./src/controller/alert.controller.js";
 const actions = [
-    {
-        label: "Registrar usuario",
-        action: () => {
-            rl.question("---------------\nIngrese el nombre del nuevo usuario: \n", (name) => {
-                registerUser(name);
-                rl.prompt();
-            });
-        },
+  {
+    label: "Registrar usuario",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del nuevo usuario:\n",
+        (name) => {
+          registerUser(name);
+          rl.prompt();
+        }
+      );
     },
-    {
-        label: "Visualizar usuarios",
-        action: () => {
-            console.log(getUsers());
-        },
+  },
+  {
+    label: "Visualizar usuarios",
+    action: () => {
+      console.log(getUsers());
     },
-    {
-        label: "Registrar temas",
-        action: () => {
-            rl.question("---------------\nIngrese el nombre del nuevo tema: \n", (name) => {
-                createTopic(name);
-                rl.prompt();
-            });
-        },
+  },
+  {
+    label: "Registrar temas",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del nuevo tema: \n",
+        (name) => {
+          createTopic(name);
+          rl.prompt();
+        }
+      );
     },
-    {
-        label: "Suscribir usuario",
-        action: () => {
-            rl.question("---------------\nIngrese el nombre del tema y del usuario separado por coma: \n", (input) => {
-                const splitString = input.split(",").map((el) => el.trim());
-                const response = suscribeTopic(splitString[0], splitString[1]);
-                console.log(response);
-                rl.prompt();
-            });
-        },
+  },
+  {
+    label: "Suscribir usuario",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del tema y del usuario separado por coma: \n",
+        (input) => {
+          const splitString = input.split(",").map((el) => el.trim());
+          const response = suscribeTopic(splitString[0], splitString[1]);
+          console.log(response);
+          rl.prompt();
+        }
+      );
     },
-    {
-        label: "Difundir tema",
-        action: () => {
-            console.log("test");
-        },
+  },
+  {
+    label: "Difundir tema",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del tema: \n",
+        (input) => {
+          const response = spreadAlert(input.trim());
+          console.log(response);
+          rl.prompt();
+        }
+      );
     },
-    {
-        label: "Enviar tema a usuario específico",
-        action: () => {
-            console.log("test 2");
-        },
+  },
+  {
+    label: "Enviar tema a usuario específico",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del usuario y del tema separado por coma: \n",
+        (input) => {
+          const splitString = input.split(",").map((el) => el.trim());
+          const response = sendAlertOneUser(splitString[0], splitString[1]);
+          console.log(response);
+          rl.prompt();
+        }
+      );
     },
-    {
-        label: "Marcar como alerta como leída",
-        action: () => {
-            console.log("test");
-        },
+  },
+  {
+    label: "Marcar como alerta como leída",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del usuario: \n",
+        (input) => {
+          markAlertAsRead(input.trim());
+          rl.prompt();
+        }
+      );
     },
+  },
+  {
+    label: "Alertas no expiradas de un usuario que aún no ha leído",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del usuario: \n",
+        (input) => {
+          const response = getUnreadNotExpiredAlertsForUser(input.trim());
+          console.log(response);
+          rl.prompt();
+        }
+      );
+    },
+  },
+  {
+    label: "Alertas no expiradas para un tema",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del tema: \n",
+        (input) => {
+          const response = getAlertsForTopic(input.trim());
+          console.log(response);
+          rl.prompt();
+        }
+      );
+    },
+  },
 ];
 const getOptions = () => {
-    const options = actions.reduce((acc, curr, i) => acc + `${i + 1}. ${curr.label}\n`, "");
-    return options;
+  const options = actions.reduce(
+    (acc, curr, i) => acc + `${i + 1}. ${curr.label}\n`,
+    ""
+  );
+  return options;
 };
 const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: `---------------\nOpciones: \n${getOptions()}`,
+  input: process.stdin,
+  output: process.stdout,
+  prompt: `---------------\nOpciones: \n${getOptions()}`,
 });
 rl.prompt();
 rl.on("line", (line) => {
-    const optionSelected = actions[line];
-    if (optionSelected) {
-        optionSelected.action();
-    }
-    else {
-        console.log("La opción ingresada es incorrecta...");
-    }
-    // switch (line.trim()) {
-    //   case "hello":
-    //     console.log("world!");
-    //     break;
-    //   default:
-    //     console.log(`Say what? I might have heard '${line.trim()}'`);
-    //     break;
-    // }
-    rl.prompt();
+  const optionSelected = actions[line];
+  if (optionSelected) {
+    optionSelected.action();
+  } else {
+    console.log("La opción ingresada es incorrecta...");
+  }
+  // switch (line.trim()) {
+  //   case "hello":
+  //     console.log("world!");
+  //     break;
+  //   default:
+  //     console.log(`Say what? I might have heard '${line.trim()}'`);
+  //     break;
+  // }
+  rl.prompt();
 }).on("close", () => {
-    console.log("Have a great day!");
-    process.exit(0);
+  console.log("Have a great day!");
+  process.exit(0);
 });

@@ -6,13 +6,20 @@ import {
 } from "./src/controller/user.controller";
 import User from "./src/modules/User";
 import { createTopic } from "./src/controller/topic.controller";
+import {
+  spreadAlert,
+  sendAlertOneUser,
+  markAlertAsRead,
+  getUnreadNotExpiredAlertsForUser,
+  getAlertsForTopic,
+} from "./src/controller/alert.controller";
 
 const actions = [
   {
     label: "Registrar usuario",
     action: () => {
       rl.question(
-        "---------------\nIngrese el nombre del nuevo usuario: \n",
+        "---------------\nIngrese el nombre del nuevo usuario:\n",
         (name) => {
           registerUser(name);
           rl.prompt();
@@ -55,19 +62,66 @@ const actions = [
   {
     label: "Difundir tema",
     action: () => {
-      console.log("test");
+      rl.question(
+        "---------------\nIngrese el nombre del tema: \n",
+        (input) => {
+          const response = spreadAlert(input.trim());
+          console.log(response);
+          rl.prompt();
+        }
+      );
     },
   },
   {
     label: "Enviar tema a usuario específico",
     action: () => {
-      console.log("test 2");
+      rl.question(
+        "---------------\nIngrese el nombre del usuario y del tema separado por coma: \n",
+        (input) => {
+          const splitString = input.split(",").map((el) => el.trim());
+          const response = sendAlertOneUser(splitString[0], splitString[1]);
+          console.log(response);
+          rl.prompt();
+        }
+      );
     },
   },
   {
     label: "Marcar como alerta como leída",
     action: () => {
-      console.log("test");
+      rl.question(
+        "---------------\nIngrese el nombre del usuario: \n",
+        (input) => {
+          markAlertAsRead(input.trim());
+          rl.prompt();
+        }
+      );
+    },
+  },
+  {
+    label: "Alertas no expiradas de un usuario que aún no ha leído",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del usuario: \n",
+        (input) => {
+          const response = getUnreadNotExpiredAlertsForUser(input.trim());
+          console.log(response);
+          rl.prompt();
+        }
+      );
+    },
+  },
+  {
+    label: "Alertas no expiradas para un tema",
+    action: () => {
+      rl.question(
+        "---------------\nIngrese el nombre del tema: \n",
+        (input) => {
+          const response = getAlertsForTopic(input.trim());
+          console.log(response);
+          rl.prompt();
+        }
+      );
     },
   },
 ];

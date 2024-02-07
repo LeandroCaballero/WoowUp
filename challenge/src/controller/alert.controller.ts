@@ -23,7 +23,7 @@ export const sendAlertOneUser = (userName: string, topicName: string) => {
   );
 
   //Envio alerta
-  newAlert.sendAlert();
+  newAlert.sendAlert(user.getName);
 
   //Agrego alerta al user
   user.addAlert(newAlert);
@@ -64,10 +64,12 @@ export const spreadAlert = (topicName: string) => {
       topic.getName
     );
 
-    newAlert.sendAlert();
-
+    //Envio alerta
+    newAlert.sendAlert(user.getName);
+    //Seteo alerta al usuario en cuestión
     user.addAlert(newAlert);
 
+    // Actualizo db
     database.updateUser(user);
     database.saveAlert(newAlert);
   }

@@ -11,7 +11,7 @@ export interface Alert {
   isRead: boolean;
   expirationDate: Date;
   topic: string;
-  sendAlert: () => void;
+  sendAlert: (userName: string) => void;
   setMarked: () => void;
 }
 
@@ -31,8 +31,8 @@ class UrgentAlert implements Alert {
     this.expirationDate = new Date(currentDate.getTime() + 2 * 60000);
   }
 
-  public sendAlert = () => {
-    console.log("Alerta urgente!");
+  public sendAlert = (userName: string) => {
+    console.log(`Alerta urgente! -> ${userName}`);
     // Lógica para realizar una acción específica de las urgentes, ej. mandar email
   };
 
@@ -57,8 +57,8 @@ class InformativeAlert implements Alert {
     this.expirationDate = new Date(currentDate.getTime() + 2 * 60000);
   }
 
-  public sendAlert = () => {
-    console.log("Alerta Informativa!");
+  public sendAlert = (userName: string) => {
+    console.log(`Alerta Informativa! -> ${userName}`);
     // Lógica para realizar una acción específica de las informativas
   };
 

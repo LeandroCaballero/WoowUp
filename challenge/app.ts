@@ -21,7 +21,7 @@ const actions = [
       rl.question(
         "---------------\nIngrese el nombre del nuevo usuario:\n",
         (name) => {
-          registerUser(name);
+          console.log(registerUser(name));
           rl.prompt();
         }
       );
@@ -34,7 +34,7 @@ const actions = [
     },
   },
   {
-    label: "Registrar temas",
+    label: "Registrar tema",
     action: () => {
       rl.question(
         "---------------\nIngrese el nombre del nuevo tema: \n",

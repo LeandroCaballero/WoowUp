@@ -17,7 +17,7 @@ describe("registerUser", () => {
     registerUser("Juan");
     const result = getUsers();
 
-    expect(result).toBe("Los usuarios registrados son: \nLean\nJuan\n");
+    expect(result).toBe("Los usuarios registrados son: \n->Lean\n->Juan\n");
   });
 
   it("should return error if user already exists", () => {

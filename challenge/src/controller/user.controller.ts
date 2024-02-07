@@ -19,7 +19,7 @@ export const registerUser = (name: string) => {
 export const getUsers = () => {
   const users = database.getUsers;
   const usersFormatted = users.reduce(
-    (acc, curr) => acc + `${curr.getName}\n`,
+    (acc, curr) => acc + `->${curr.getName}\n`,
     ""
   );
   return `Los usuarios registrados son: \n${usersFormatted}`;

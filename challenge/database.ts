@@ -52,7 +52,7 @@ export class Database {
   //Updates
   public updateUser(user: User) {
     const indexUserFinded = this.users.findIndex(
-      (user) => user.getName == user.getName
+      (el) => el.getName == user.getName
     );
 
     this.users[indexUserFinded] = user;

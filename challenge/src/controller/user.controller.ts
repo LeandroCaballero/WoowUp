@@ -19,7 +19,7 @@ export const getUsers = () => {
   return `Los usuarios registrados son: \n${usersFormatted}`;
 };
 
-export const suscribeTopic = (userName: string, topicName: string): string => {
+export const suscribeTopic = (userName: string, topicName: string) => {
   const user = database.getOneUser(userName);
   const topic = database.getOneTopic(topicName);
 
@@ -37,5 +37,5 @@ export const suscribeTopic = (userName: string, topicName: string): string => {
   //Actualizo la db
   database.updateUser(user);
 
-  return "Usuario suscripto!";
+  return database.getOneUser(user.getName);
 };

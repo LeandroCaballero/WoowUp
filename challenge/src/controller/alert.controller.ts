@@ -31,12 +31,14 @@ export const sendAlertOneUser = (userName: string, topicName: string) => {
   // Actualizo db
   database.updateUser(user);
   database.saveAlert(newAlert);
+
+  return "Usuario creado!";
 };
 
 export const spreadAlert = (topicName: string) => {
   const topic = database.getOneTopic(topicName);
   const users = database.getUsers;
-  let usersToSend: User[] = [];
+  let usersToSendAlerts: User[] = [];
 
   if (!topic) {
     return "Tema no encontrado!";
@@ -50,11 +52,11 @@ export const spreadAlert = (topicName: string) => {
 
     // Si el usuario esta suscripto
     if (filterTopic.length > 0) {
-      usersToSend.push(user);
+      usersToSendAlerts.push(user);
     }
   }
 
-  for (const user of usersToSend) {
+  for (const user of usersToSendAlerts) {
     //Se puede implementar lógica para establecer informativa o urgente
     const newAlert = AlertFactory.createAlert(
       AlertType.Informative,

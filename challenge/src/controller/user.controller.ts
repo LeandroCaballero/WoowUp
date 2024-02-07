@@ -6,6 +6,8 @@ const database = Database.getInstance();
 export const registerUser = (name: string) => {
   const newUser = new User(name);
   database.saveUser(newUser);
+
+  return newUser;
 };
 
 export const getUsers = () => {

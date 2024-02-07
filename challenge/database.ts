@@ -56,6 +56,8 @@ export class Database {
     );
 
     this.users[indexUserFinded] = user;
+
+    return this.users[indexUserFinded];
   }
 
   public updateAlert(indexAlert: number, alert: Alert) {

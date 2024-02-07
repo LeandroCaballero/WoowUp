@@ -7,7 +7,7 @@ const database = Database.getInstance();
 
 describe("registerUser", () => {
   it("register a new user", () => {
-    const result = registerUser("Lean");
+    const result = registerUser("Lean") as User;
 
     expect(result).toBeInstanceOf(User);
     expect(result.getName).toBe("Lean");
@@ -16,7 +16,14 @@ describe("registerUser", () => {
   it("return all users registered", () => {
     registerUser("Juan");
     const result = getUsers();
+
     expect(result).toBe("Los usuarios registrados son: \nLean\nJuan\n");
+  });
+
+  it("should return error if user already exists", () => {
+    const result = registerUser("Lean");
+
+    expect(result).toBe("Ya existe un usuario con ese nombre");
   });
 });
 

@@ -4,6 +4,12 @@ import User from "../modules/User";
 const database = Database.getInstance();
 
 export const registerUser = (name: string) => {
+  const user = database.getOneUser(name);
+
+  if (user) {
+    return "Ya existe un usuario con ese nombre";
+  }
+
   const newUser = new User(name);
   database.saveUser(newUser);
 

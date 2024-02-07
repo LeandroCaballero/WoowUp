@@ -46,4 +46,9 @@ describe("suscribeTopic", () => {
     const result = suscribeTopic("Lean", "futbol");
     expect(result).toBe("Tema no encontrado!");
   });
+
+  it("should return error if user already suscribed", () => {
+    const result = suscribeTopic("Lean", "arte");
+    expect(result).toBe("El usuario ya se encuentra suscripto a ese tema!");
+  });
 });

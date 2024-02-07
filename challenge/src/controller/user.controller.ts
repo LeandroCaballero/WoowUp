@@ -37,6 +37,14 @@ export const suscribeTopic = (userName: string, topicName: string) => {
     return "Tema no encontrado!";
   }
 
+  const findTopicExist = user.getSelectedTopics.find(
+    (top) => top.getName == topic.getName
+  );
+
+  if (findTopicExist) {
+    return "El usuario ya se encuentra suscripto a ese tema!";
+  }
+
   //Agrego el topic al usuario correspondiente
   user.suscribeTopic(topic);
 

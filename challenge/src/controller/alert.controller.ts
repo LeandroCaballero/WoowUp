@@ -66,15 +66,17 @@ export const spreadAlert = (topicName: string) => {
     topic.getName
   );
 
+  //Guardar alerta
+  database.saveAlert(newAlert);
+
   for (const user of usersToSendAlerts) {
     //Envio alerta
     newAlert.sendAlert(user.getName);
     //Seteo alerta al usuario en cuestión
     user.addAlert(newAlert);
 
-    // Actualizo db
+    // Actualizo usuario
     database.updateUser(user);
-    database.saveAlert(newAlert);
   }
 };
 

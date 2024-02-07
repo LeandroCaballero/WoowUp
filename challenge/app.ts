@@ -65,7 +65,10 @@ const actions = [
       rl.question(
         "---------------\nIngrese el nombre del tema: \n",
         (input) => {
-          spreadAlert(input.trim());
+          const response = spreadAlert(input.trim());
+          if (response) {
+            console.log(response);
+          }
           rl.prompt();
         }
       );
@@ -79,7 +82,9 @@ const actions = [
         (input) => {
           const splitString = input.split(",").map((el) => el.trim());
           const response = sendAlertOneUser(splitString[0], splitString[1]);
-          console.log(response);
+          if (response) {
+            console.log(response);
+          }
           rl.prompt();
         }
       );

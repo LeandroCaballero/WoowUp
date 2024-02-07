@@ -1,5 +1,5 @@
 
-# WoowUp - Challenge
+# Challenge
 
 ### Consideraciones
 - El programa se maneja por medio de la consola

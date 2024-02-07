@@ -38,6 +38,8 @@ class UrgentAlert implements Alert {
 
   public setMarked() {
     this.isRead = true;
+
+    // Lógica para notificar que fue leída
   }
 }
 

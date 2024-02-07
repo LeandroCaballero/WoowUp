@@ -65,8 +65,7 @@ const actions = [
       rl.question(
         "---------------\nIngrese el nombre del tema: \n",
         (input) => {
-          const response = spreadAlert(input.trim());
-          console.log(response);
+          spreadAlert(input.trim());
           rl.prompt();
         }
       );

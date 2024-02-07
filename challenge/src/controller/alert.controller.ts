@@ -4,6 +4,11 @@ import User from "../modules/User";
 
 const database = Database.getInstance();
 
+interface AlertToSortType {
+  alert: Alert;
+  index: number;
+}
+
 export const sendAlertOneUser = (userName: string, topicName: string) => {
   const user = database.getOneUser(userName);
   const topic = database.getOneTopic(topicName);
@@ -31,8 +36,6 @@ export const sendAlertOneUser = (userName: string, topicName: string) => {
   // Actualizo db
   database.updateUser(user);
   database.saveAlert(newAlert);
-
-  return "Usuario creado!";
 };
 
 export const spreadAlert = (topicName: string) => {
@@ -56,14 +59,14 @@ export const spreadAlert = (topicName: string) => {
     }
   }
 
-  for (const user of usersToSendAlerts) {
-    //Se puede implementar lógica para establecer informativa o urgente
-    const newAlert = AlertFactory.createAlert(
-      AlertType.Informative,
-      "Informativa",
-      topic.getName
-    );
+  //Se puede implementar lógica para establecer informativa o urgente
+  const newAlert = AlertFactory.createAlert(
+    AlertType.Informative,
+    "Informativa",
+    topic.getName
+  );
 
+  for (const user of usersToSendAlerts) {
     //Envio alerta
     newAlert.sendAlert(user.getName);
     //Seteo alerta al usuario en cuestión
@@ -103,15 +106,24 @@ export const getUnreadNotExpiredAlertsForUser = (userName: string) => {
 
   const currentDate = new Date();
 
-  const filterAlerts = user.getAlerts.filter(
-    (alert) => !alert.isRead && alert.expirationDate > currentDate
-  );
+  /* - Alertas que no están leidas y que tengan una fecha de expiración mayor a la actual
+     - Agrego el indice para poder visualizar LIFO y FIFO
+  */
+  const filterAlerts = user.getAlerts
+    .filter((alert) => !alert.isRead && alert.expirationDate > currentDate)
+    .map((alert, index) => {
+      return {
+        alert,
+        index,
+      };
+    });
 
   // Las ordeno
   const sortedAlerts = sortAlerts(filterAlerts);
 
+  // Formateo la información, obviamente se haría de otra manera para enviar la información en un caso real
   const alertsFormatted = sortedAlerts.reduce(
-    (acc, curr) => acc + `${curr.message}\n`,
+    (acc, curr) => acc + `${curr.index}-${curr.alert.message}\n`,
     ""
   );
 
@@ -120,7 +132,8 @@ export const getUnreadNotExpiredAlertsForUser = (userName: string) => {
 
 export const getAlertsForTopic = (topicName: string) => {
   const oneTopic = database.getOneTopic(topicName);
-  const responseAlerts: { alert: Alert; quantityUsers: string }[] = [];
+  const responseAlerts: { alert: AlertToSortType; quantityUsers: string }[] =
+    [];
 
   if (!oneTopic) {
     return "Tema no encontrado!";
@@ -130,30 +143,39 @@ export const getAlertsForTopic = (topicName: string) => {
   const currentDate = new Date();
 
   // Filtro por tema y expiración
-  const filterAlertsForTopic = alerts.filter(
-    (alert) => alert.topic == topicName && alert.expirationDate > currentDate
-  );
+  const filterAlertsForTopic = alerts
+    .filter(
+      (alert) => alert.topic == topicName && alert.expirationDate > currentDate
+    )
+    .map((alert, index) => {
+      return {
+        alert,
+        index,
+      };
+    });
 
   // Las ordeno
   const sortedAlerts = sortAlerts(filterAlertsForTopic);
 
   // Agrego cantidad
-  for (const alert of sortedAlerts) {
-    const getQuantityUsers = checkUserSuscribe(alert);
+  for (const oneAlert of sortedAlerts) {
+    const getQuantityUsers = checkUserSuscribe(oneAlert);
 
     responseAlerts.push(getQuantityUsers);
   }
 
   // Las formateo para mostrar (no es necesario en otro ámbito, ej un API)
   const alertsFormatted = responseAlerts.reduce(
-    (acc, curr) => acc + `${curr.alert.message} - ${curr.quantityUsers}\n`,
+    (acc, curr) =>
+      acc +
+      `${curr.alert.index}-${curr.alert.alert.message} - ${curr.quantityUsers}\n`,
     ""
   );
 
   return `Las alertas son: \n${alertsFormatted}`;
 };
 
-const sortAlerts = (alerts: Alert[]) => {
+const sortAlerts = (alerts: AlertToSortType[]) => {
   const informativeAlerts = filterAlertsByType(alerts, AlertType.Informative);
 
   //   Las invierto para que la primera en entrar sea la primera en salir
@@ -162,31 +184,30 @@ const sortAlerts = (alerts: Alert[]) => {
   return [...urgentAlerts, ...informativeAlerts].flat();
 };
 
-const filterAlertsByType = (alerts: Alert[], type: AlertType) => {
-  const alertsFiltered = alerts.filter((alert) => alert.type == type);
+const filterAlertsByType = (alerts: AlertToSortType[], type: AlertType) => {
+  const alertsFiltered = alerts.filter((el) => el.alert.type == type);
   return alertsFiltered;
 };
 
-const checkUserSuscribe = (alert: Alert) => {
+const checkUserSuscribe = (alert: AlertToSortType) => {
   const users = database.getUsers;
   let quantityUsers = "";
 
-  // Verifico si todos los usuarios tienen el alerta
-  const everyUsers = users.every((user) => user.getAlerts.includes(alert));
-  if (everyUsers) {
-    quantityUsers = "Todos los usuarios";
+  // Filtrar los usuarios que tienen la alerta
+  const usersFilteredContainAlert = users.filter((user) =>
+    user.getAlerts.some((el) => el == alert.alert)
+  );
+
+  if (usersFilteredContainAlert.length === 1) {
+    quantityUsers = "Un usuario";
   }
 
-  // Algunos
-  const someUsers = users.some((user) => user.getAlerts.includes(alert));
-  if (someUsers) {
+  if (usersFilteredContainAlert.length > 1) {
     quantityUsers = "Varios usuarios";
   }
 
-  // Solo uno
-  const oneUser = users.filter((user) => user.getAlerts.includes(alert));
-  if (oneUser.length === 1) {
-    quantityUsers = "Un usuario";
+  if (usersFilteredContainAlert.length === users.length) {
+    quantityUsers = "Todos los usuarios";
   }
 
   const response = { alert, quantityUsers };
